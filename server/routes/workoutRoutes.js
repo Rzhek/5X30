@@ -8,7 +8,7 @@ router.get('/findWorkoutById', async (req, res) => {
 	const id = req?.query?.id;
 	if (!id) return res.status(400).json({ message: 'No id provided' });
 
-	const workout = await Workout.findById(id);
+	const workout = await Workout.findById(id).populate('exercises');
 	if (!workout) {
 		return res.status(404).json({ message: 'Workout not found' });
 	}
@@ -61,15 +61,41 @@ router.delete('/deleteWorkout', async (req, res) => {
 		await Workout.findByIdAndDelete(workoutId);
 
 		curUser.workouts = curUser.workouts.filter((obj) => {
-			// obj.toString() !== workoutId;
-			return obj.toString() !== workoutId;
-			// return true;
+			obj.toString() !== workoutId;
 		});
-
-		// curUser.up
 
 		await curUser.save();
 		res.json({ message: 'Workout deleted successfully' });
+	} catch (error) {
+		res.status(400).json({ error: error.message });
+	}
+});
+
+router.put('/updateWorkout', async (req, res) => {
+	try {
+		const { workoutId, newName, exercises } = req.body;
+
+		if (!workoutId) {
+			return res.status(400).json({ error: 'Workout ID missing' });
+		}
+		if (!newName) {
+			return res.status(400).json({ error: 'New name missing' });
+		}
+		if (!exercises || exercises.length() == 0) {
+			return res.status(400).json({ error: 'Exercises missing' });
+		}
+
+		const workout = await Workout.findById(workoutId);
+
+		if (!workout) {
+			return res.status(404).json({ error: 'Workout not found' });
+		}
+
+		workout.name = newName;
+		workout.exercises = exercises;
+		await workout.save();
+
+		res.json({ data: await workout.populate('exercises') });
 	} catch (error) {
 		res.status(400).json({ error: error.message });
 	}
