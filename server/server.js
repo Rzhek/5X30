@@ -13,16 +13,21 @@ app.use('/api', userRoutes);
 const workoutRoutes = require('./routes/workoutRoutes');
 app.use('/api', workoutRoutes);
 
+const exerciseRoutes = require('./routes/exerciseRoutes');
+app.use('/api', exerciseRoutes);
+
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
+mongoose
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-}).then(() => console.log('MongoDB Connected'))
-  .catch(err => console.error('MongoDB Connection Error:', err));
+  })
+  .then(() => console.log('MongoDB Connected'))
+  .catch((err) => console.error('MongoDB Connection Error:', err));
 
 // Define a test route
 app.get('/', (req, res) => {
-    res.send('Hello, Express & MongoDB!');
+  res.send('Hello, Express & MongoDB!');
 });
 
 // Start the server
