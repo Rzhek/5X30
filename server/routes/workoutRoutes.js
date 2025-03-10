@@ -1,33 +1,78 @@
 const express = require('express');
 const Workout = require('../models/Workout');
+const User = require('../models/User');
 
 const router = express.Router();
 
-router.post('/workouts', async (req, res) => {
-	try {
-		const newWorkout = new Workout(req.body);
-		console.log(res.body);
-		await newWorkout.save();
-		res.status(201).json(newWorkout);
-	} catch (error) {
-		res.status(400).json({ error: error.message });
-	}
-});
-
-router.get('/workouts', async (req, res) => {
-	const workouts = await Workout.find();
-	res.json(workouts);
-});
-
 router.get('/findWorkoutById', async (req, res) => {
 	const id = req?.query?.id;
-	if (!id) return res.status(404).json({ message: 'No id provided' });
+	if (!id) return res.status(400).json({ message: 'No id provided' });
 
 	const workout = await Workout.findById(id);
 	if (!workout) {
 		return res.status(404).json({ message: 'Workout not found' });
 	}
 	res.json(workout);
+});
+
+router.post('/createWorkout', async (req, res) => {
+	try {
+		const { userId, workoutName, exercises } = req.body;
+		if (!userId) {
+			throw new Error('User ID missing');
+		}
+		if (!workoutName) {
+			throw new Error('Workout Name missing');
+		}
+		if (!exercises || !exercises.length) {
+			throw new Error('No exercises provided');
+		}
+
+		const curUser = await User.findById(userId);
+		if (!curUser) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+
+		const newWorkout = new Workout({ name: workoutName, exercises });
+		await newWorkout.save();
+		curUser.workouts.push(newWorkout);
+		curUser.save();
+		res.status(201).json({ message: 'Workout Added Successfully' });
+	} catch (error) {
+		return res.status(400).json({ error: error.message });
+	}
+});
+
+router.delete('/deleteWorkout', async (req, res) => {
+	try {
+		const { userId, workoutId } = req.body;
+		if (!userId) {
+			throw new Error('User ID missing');
+		}
+		if (!workoutId) {
+			throw new Error('Workout ID missing');
+		}
+
+		const curUser = await User.findById(userId);
+		if (!curUser) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+
+		await Workout.findByIdAndDelete(workoutId);
+
+		curUser.workouts = curUser.workouts.filter((obj) => {
+			// obj.toString() !== workoutId;
+			return obj.toString() !== workoutId;
+			// return true;
+		});
+
+		// curUser.up
+
+		await curUser.save();
+		res.json({ message: 'Workout deleted successfully' });
+	} catch (error) {
+		res.status(400).json({ error: error.message });
+	}
 });
 
 module.exports = router;
