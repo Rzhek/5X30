@@ -16,6 +16,9 @@ app.use('/api', workoutRoutes);
 const exerciseRoutes = require('./routes/exerciseRoutes');
 app.use('/api', exerciseRoutes);
 
+const recordRoutes = require('./routes/recordsRoutes');
+app.use('/api', recordRoutes);
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI, {
