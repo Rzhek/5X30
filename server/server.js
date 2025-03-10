@@ -10,6 +10,9 @@ app.use(cors());
 const userRoutes = require('./routes/userRoutes');
 app.use('/api', userRoutes);
 
+const workoutRoutes = require('./routes/workoutRoutes');
+app.use('/api', workoutRoutes);
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
