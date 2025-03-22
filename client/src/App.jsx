@@ -1,4 +1,4 @@
-import './App.css';
+import Header from './components/Header';
 import WelcomePage from './components/WelcomePage';
 import { callExternalApi } from './util/external-api.service';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -28,24 +28,25 @@ function App() {
 	// 	const { data, error } = await callExternalApi({ config });
 	// 	console.log(data, error);
 	// }
-
+	console.log(user);
 	return (
-		<>
-			{!isAuthenticated ? (
-				<WelcomePage />
-			) : (
-				<>
-					<button
-						onClick={() =>
-							logout({ logoutParams: { returnTo: window.location.origin } })
-						}
-					>
-						Logout
-					</button>
-					<p>Welcome, {user.name}</p>
-				</>
-			)}
-		</>
+		<Header />
+		// <>
+		// 	{!isAuthenticated ? (
+		// 		<WelcomePage />
+		// 	) : (
+		// 		<>
+		// 			<button
+		// 				onClick={() =>
+		// 					logout({ logoutParams: { returnTo: window.location.origin } })
+		// 				}
+		// 			>
+		// 				Logout
+		// 			</button>
+		// 			<p>Welcome, {user.name}</p>
+		// 		</>
+		// 	)}
+		// </>
 	);
 }
 
