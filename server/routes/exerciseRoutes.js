@@ -52,9 +52,6 @@ async function createExercisesInDatabase(exerciseDataArray) {
 
 router.post('/getExercise', async (req, res) => {
 	const { name } = req.body;
-	console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-	console.log(name);
-	console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
 
 	const existingExercises = await lookupExerciseInDatabase(name);
 

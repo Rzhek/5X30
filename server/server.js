@@ -7,7 +7,7 @@ const { validateAccessToken } = require('./middleware/auth0.middleware');
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(validateAccessToken);
+// app.use(validateAccessToken);
 
 const userRoutes = require('./routes/userRoutes');
 app.use('/api', userRoutes);

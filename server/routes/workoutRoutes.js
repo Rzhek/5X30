@@ -15,6 +15,23 @@ router.get('/findWorkoutById', async (req, res) => {
 	res.json(workout);
 });
 
+router.get('/getUsersWorkouts', async (req, res) => {
+	try {
+		const { userId } = req.query;
+		const user = await User.findById(userId).populate({
+			path: 'workouts',
+			populate: { path: 'exercises' },
+		});
+
+		if (!user) return res.status(404).json({ error: 'User not found' });
+
+		if (!user.workouts) return res.json([]);
+		return res.json(user.workouts);
+	} catch (error) {
+		return res.status(400).json({ error: error.message });
+	}
+});
+
 router.post('/createWorkout', async (req, res) => {
 	try {
 		const { userId, workoutName, exercises } = req.body;
