@@ -11,7 +11,6 @@ export default function ExercisesPage() {
   const [exercises, setExercises] = useState([]);
 
   const [localExercises, setLocalExercises] = useState([]);
-  console.log('local', localExercises);
 
   const {
     loginWithRedirect,

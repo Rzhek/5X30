@@ -86,6 +86,7 @@ router.delete('/deleteWorkout', async (req, res) => {
 });
 
 router.put('/updateWorkout', async (req, res) => {
+  console.log(req.body);
   try {
     const { workoutId, newName, exercises } = req.body;
 
@@ -95,7 +96,7 @@ router.put('/updateWorkout', async (req, res) => {
     if (!newName) {
       return res.status(400).json({ error: 'New name missing' });
     }
-    if (!exercises || exercises.length() == 0) {
+    if (!exercises || exercises.length == 0) {
       return res.status(400).json({ error: 'Exercises missing' });
     }
 

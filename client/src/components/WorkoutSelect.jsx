@@ -26,7 +26,6 @@ export default function WorkoutSelect() {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(res.data);
     return res.data;
   }
 
@@ -64,6 +63,25 @@ export default function WorkoutSelect() {
         userWorkouts.find((w) => w.name == selectedWorkout).exercises
       );
   }, [selectedWorkout]);
+
+  async function pushLocalWorkoutChanges() {
+    const apiServerUrl = import.meta.env.VITE_API_SERVER_URL;
+    const token = await getAccessTokenSilently();
+    await axios.put(
+      `${apiServerUrl}/api/updateWorkout`,
+      {
+        workoutId: userWorkouts.find((w) => w.name == selectedWorkout)._id,
+        newName: selectedWorkout,
+        exercises: localExercises.map((e) => e._id),
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
 
   return (
     <>
@@ -107,6 +125,7 @@ export default function WorkoutSelect() {
           );
         })}
       </div>
+      <button onClick={pushLocalWorkoutChanges}>save workout</button>
     </>
   );
 }

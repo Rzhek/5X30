@@ -8,7 +8,6 @@ const router = express.Router();
 // get all records
 router.get('/getExerciseRecords', async (req, res) => {
 	const { userId, exerciseName } = req.query;
-	console.log(userId, exerciseName);
 	const exerciseId = (await Exercise.findOne({ name: exerciseName }))._id;
 
 	const curUser = await User.findById(userId).populate({
