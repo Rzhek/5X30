@@ -4,13 +4,14 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import ExerciseItem from './ExerciseItem';
 import WorkoutSelect from './WorkoutSelect';
+import { ContextLocalExercises } from './ContextLocalExercises';
 
 export default function ExercisesPage() {
   const [name, setName] = useState('');
   const [exercises, setExercises] = useState([]);
 
-  // const [localExercises, setLocalExercises] = useState([]);
-  // const
+  const [localExercises, setLocalExercises] = useState([]);
+  console.log('local', localExercises);
 
   const {
     loginWithRedirect,
@@ -28,7 +29,7 @@ export default function ExercisesPage() {
     const { data, error } = await axios.post(
       `${apiServerUrl}/api/getExercise`,
       {
-        name: name, // Request body
+        name: name,
       },
       {
         headers: {
@@ -47,34 +48,40 @@ export default function ExercisesPage() {
   };
 
   return (
-    <div className='m-8'>
-      <WorkoutSelect></WorkoutSelect>
-      <h1 className='text-4xl font-bold text-primary mb-6'>Exercises</h1>
+    <ContextLocalExercises.Provider
+      value={{ localExercises, setLocalExercises }}
+    >
+      <div className='m-8'>
+        <WorkoutSelect></WorkoutSelect>
+        <h1 className='text-4xl font-bold text-primary mb-6'>Exercises</h1>
 
-      <form
-        onSubmit={(e) => getExercises(e)}
-        className='flex items-center space-x-4 bg-secondary p-4 rounded-lg shadow-md mb-6'
-      >
-        <input
-          type='text'
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder='Search exercises...'
-          className='flex-1 p-2 rounded-lg bg-white text-black border border-primary focus:outline-none focus:ring-2 focus:ring-primary'
-        />
-        <button
-          type='submit'
-          className='bg-primary text-white px-4 py-2 rounded-lg font-semibold hover:opacity-80 transition duration-300'
+        <form
+          onSubmit={(e) => getExercises(e)}
+          className='flex items-center space-x-4 bg-secondary p-4 rounded-lg shadow-md mb-6'
         >
-          🔍
-        </button>
-      </form>
+          <input
+            type='text'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder='Search exercises...'
+            className='flex-1 p-2 rounded-lg bg-white text-black border border-primary focus:outline-none focus:ring-2 focus:ring-primary'
+          />
+          <button
+            type='submit'
+            className='bg-primary text-white px-4 py-2 rounded-lg font-semibold hover:opacity-80 transition duration-300'
+          >
+            🔍
+          </button>
+        </form>
 
-      <div className='flex flex-wrap gap-6'>
-        {exercises.map((item) => (
-          <ExerciseItem key={item._id} item={item} />
-        ))}
+        <div className='flex flex-wrap gap-6'>
+          {exercises
+            .filter((e) => localExercises.every((ex) => ex._id !== e._id))
+            .map((item) => (
+              <ExerciseItem key={item._id} item={item} />
+            ))}
+        </div>
       </div>
-    </div>
+    </ContextLocalExercises.Provider>
   );
 }

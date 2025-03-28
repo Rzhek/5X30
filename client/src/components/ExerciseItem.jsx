@@ -1,20 +1,24 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { ContextLocalExercises } from './ContextLocalExercises';
 
 const ExerciseItem = ({ item, addOrDelete }) => {
-  const { name, type, difficulty, muscle, equipment, instructions } = item;
+  const { _id, name, type, difficulty, muscle, equipment, instructions } = item;
   const [expanded, setExpanded] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleInstructions = () => setExpanded(!expanded);
 
-  // Function to open the modal
   const openModal = () => setIsModalOpen(true);
 
-  // Function to close the modal
   const closeModal = () => setIsModalOpen(false);
+
+  const { localExercises, setLocalExercises } = useContext(
+    ContextLocalExercises
+  );
 
   return (
     <div className='bg-secondary p-6 rounded-2xl shadow-lg border border-primary mb-4 flex-1 min-w-[250px] max-w-xs'>
+      <h1>{_id}</h1>
       <h3 className='text-2xl font-bold text-primary mb-2'>{name}</h3>
       <p className='text-accent font-semibold'>
         Type: <span className='text-white'>{type}</span>
@@ -40,7 +44,19 @@ const ExerciseItem = ({ item, addOrDelete }) => {
           </button>
         </p>
       </div>
-      {addOrDelete == 'delete' ? <button>🗑️</button> : <button>➕</button>}
+      {addOrDelete == 'delete' ? (
+        <button
+          onClick={() =>
+            setLocalExercises(localExercises.filter((e) => e._id != _id))
+          }
+        >
+          🗑️
+        </button>
+      ) : (
+        <button onClick={() => setLocalExercises([...localExercises, item])}>
+          ➕
+        </button>
+      )}
 
       {/* Modal Popup */}
       {isModalOpen && (

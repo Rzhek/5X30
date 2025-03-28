@@ -1,7 +1,8 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ExerciseItem from './ExerciseItem';
+import { ContextLocalExercises } from './ContextLocalExercises';
 
 export default function WorkoutSelect() {
   const [userWorkouts, setUserWorkouts] = useState([]);
@@ -9,6 +10,10 @@ export default function WorkoutSelect() {
   const { user, getAccessTokenSilently } = useAuth0();
   const [workoutName, setWorkoutName] = useState('');
   const [selectedWorkout, setSelectedWorkout] = useState('');
+
+  const { localExercises, setLocalExercises } = useContext(
+    ContextLocalExercises
+  );
 
   async function getUserWorkouts() {
     const token = await getAccessTokenSilently();
@@ -24,8 +29,6 @@ export default function WorkoutSelect() {
     console.log(res.data);
     return res.data;
   }
-
-  async function addWorkout() {}
 
   async function addWorkout() {
     const token = await getAccessTokenSilently();
@@ -55,6 +58,13 @@ export default function WorkoutSelect() {
     });
   }, [user]);
 
+  useEffect(() => {
+    if (selectedWorkout != '')
+      setLocalExercises(
+        userWorkouts.find((w) => w.name == selectedWorkout).exercises
+      );
+  }, [selectedWorkout]);
+
   return (
     <>
       <select
@@ -62,7 +72,9 @@ export default function WorkoutSelect() {
         id=''
         className='text-primary'
         value={selectedWorkout}
-        onChange={(e) => setSelectedWorkout(e.target.value)}
+        onChange={(e) => {
+          setSelectedWorkout(e.target.value);
+        }}
       >
         <option value='' disabled selected>
           Select workout
@@ -85,11 +97,15 @@ export default function WorkoutSelect() {
       ></input>
       <button onClick={addWorkout}>add workout +</button>
       <div className='flex flex-wrap gap-6'>
-        {userWorkouts
-          .find((w) => w.name == selectedWorkout)
-          ?.exercises.map((exercise) => {
-            return <ExerciseItem item={exercise} addOrDelete={'delete'} />;
-          })}
+        {localExercises.map((exercise) => {
+          return (
+            <ExerciseItem
+              key={exercise._id}
+              item={exercise}
+              addOrDelete={'delete'}
+            />
+          );
+        })}
       </div>
     </>
   );
