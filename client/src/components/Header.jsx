@@ -50,10 +50,10 @@ export default function Header() {
           Analytics
         </Link>
         <Link to='/workouts' className='text-xl'>
-          Track workouts
+          Log Workouts
         </Link>
         <Link to='/exercises' className='text-xl'>
-          Exercises
+          Manage Workouts
         </Link>
       </nav>
 
