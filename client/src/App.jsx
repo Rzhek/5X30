@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Header from './components/Header';
 import WelcomePage from './components/WelcomePage';
-import { callExternalApi } from './util/external-api.service';
 import { useAuth0 } from '@auth0/auth0-react';
 
 import AnalyticsPage from './components/AnalyticsPage';

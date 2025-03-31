@@ -1,6 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios';
 import { useState } from 'react';
+import { callPost } from '../util/external-api.service';
 
 export default function RecordInput({ name, id }) {
 	const [weight, setWeight] = useState(0);
@@ -10,25 +10,20 @@ export default function RecordInput({ name, id }) {
 	const uploadRecord = async () => {
 		const apiServerUrl = import.meta.env.VITE_API_SERVER_URL;
 		const token = await getAccessTokenSilently();
-
-		const res = await axios.post(
-			`${apiServerUrl}/api/addRecord`,
-			{
+		const res = await callPost({
+			url: `${apiServerUrl}/api/addRecord`,
+			body: {
 				reps: reps,
 				weight: weight,
 				forExercise: id,
-				userEmail: user.email,
+				userEmail: user?.email,
 			},
-			{
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
-			}
-		);
-		console.log(res);
-		setWeight(0);
-		setReps(0);
+			token: token,
+		});
+		if (res.status === 200) {
+			setWeight(0);
+			setReps(0);
+		}
 	};
 
 	return (

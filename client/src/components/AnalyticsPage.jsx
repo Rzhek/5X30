@@ -3,7 +3,7 @@ import Chart from './Chart';
 import { useAuth0 } from '@auth0/auth0-react';
 import getUserWorkouts from '../util/getUserWorkouts';
 import WorkoutFullCard from './WorkoutFullCard';
-import axios from 'axios';
+import { callGet } from '../util/external-api.service';
 
 export default function AnalyticsPage() {
 	const { getAccessTokenSilently, user } = useAuth0();
@@ -13,19 +13,15 @@ export default function AnalyticsPage() {
 	useEffect(() => {
 		const fetchWorkouts = async () => {
 			const token = await getAccessTokenSilently();
+			const apiServerUrl = import.meta.env.VITE_API_SERVER_URL;
 			setUserWorkouts(await getUserWorkouts(token, user));
-
-			const records = await axios.get(
-				`http://localhost:6060/api/getUsersRecords`,
-				{
-					params: {
-						userEmail: user.email,
-					},
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				}
-			);
+			const records = await callGet({
+				url: `${apiServerUrl}/api/getUsersRecords`,
+				params: {
+					userEmail: user.email,
+				},
+				token: token,
+			});
 			setUserRecords(records.data);
 		};
 		if (user) {

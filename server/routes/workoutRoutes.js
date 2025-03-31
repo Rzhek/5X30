@@ -16,6 +16,7 @@ router.get('/findWorkoutById', async (req, res) => {
 });
 
 router.get('/getUsersWorkouts', async (req, res) => {
+	console.log(req.body);
 	try {
 		const { userEmail } = req.query;
 		const user = await User.findOne({ email: userEmail }).populate({

@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import ExerciseItem from './ExerciseItem';
 import { ContextLocalExercises } from './ContextLocalExercises';
+import { callGet } from '../util/external-api.service';
 
 export default function WorkoutSelect() {
 	const [userWorkouts, setUserWorkouts] = useState([]);
@@ -17,14 +18,12 @@ export default function WorkoutSelect() {
 
 	async function getUserWorkouts() {
 		const token = await getAccessTokenSilently();
-		const res = await axios.get('http://localhost:6060/api/getUsersWorkouts', {
-			params: {
-				userEmail: user.email,
-			},
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${token}`,
-			},
+		const apiServerUrl = import.meta.env.VITE_API_SERVER_URL;
+
+		const res = await callGet({
+			url: `${apiServerUrl}/api/getUsersWorkouts`,
+			params: { userEmail: user.email },
+			token: token,
 		});
 		return res.data;
 	}

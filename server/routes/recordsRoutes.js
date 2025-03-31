@@ -19,7 +19,6 @@ router.get('/getUsersRecords', async (req, res) => {
 
 // add record
 router.post('/addRecord', async (req, res) => {
-	console.log(req.body);
 	const { reps, weight, forExercise, userEmail } = req.body;
 	const newRecord = new Record({ reps, weight, forExercise });
 	await newRecord.save();
