@@ -63,7 +63,7 @@ const Chart = (props) => {
 		setGroups(groupByExercise(props.data));
 	}, []);
 	const [left, setLeft] = useState('dataMin');
-	const [right, setRight] = useState('dataMax+1000000');
+	const [right, setRight] = useState(new Date().getTime());
 	const [refAreaLeft, setRefAreaLeft] = useState('');
 	const [refAreaRight, setRefAreaRight] = useState('');
 	const [top, setTop] = useState('dataMax+1');
