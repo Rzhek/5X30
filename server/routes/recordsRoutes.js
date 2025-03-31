@@ -20,11 +20,16 @@ router.get('/getExerciseRecords', async (req, res) => {
 });
 
 // add record
-router.post('/records', async (req, res) => {
-	const { reps, weight, forExercise } = req.body;
+router.post('/addRecord', async (req, res) => {
+	console.log(req.body);
+	const { reps, weight, forExercise, userEmail } = req.body;
 	const newRecord = new Record({ reps, weight, forExercise });
 	await newRecord.save();
-	res.json(newRecord);
+
+	const user = await User.findOne({ email: userEmail });
+	user.records.push(newRecord);
+	user.save();
+	res.json(req.body);
 });
 
 //delete record
