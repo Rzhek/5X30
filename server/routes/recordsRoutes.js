@@ -6,17 +6,15 @@ const User = require('../models/User');
 const router = express.Router();
 
 // get all records
-router.get('/getExerciseRecords', async (req, res) => {
-	const { userId, exerciseName } = req.query;
-	const exerciseId = (await Exercise.findOne({ name: exerciseName }))._id;
-
-	const curUser = await User.findById(userId).populate({
+router.get('/getUsersRecords', async (req, res) => {
+	const { userEmail } = req.query;
+	const user = await User.findOne({ email: userEmail }).populate({
 		path: 'records',
-		select: 'reps weight createdAt',
-		match: { forExercise: exerciseId },
+		populate: { path: 'forExercise', select: 'name' },
 		options: { sort: { createdAt: 1 } },
 	});
-	res.json(curUser.records);
+
+	res.json(user.records);
 });
 
 // add record
