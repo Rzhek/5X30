@@ -12,16 +12,6 @@ import {
   Legend,
 } from 'recharts';
 
-const getAxisYDomain = (data, from, to, ref, offset) => {
-  const refData = data.slice(from - 1, to);
-  let [bottom, top] = [refData[0][ref], refData[0][ref]];
-  refData.forEach((d) => {
-    if (d[ref] > top) top = d[ref];
-    if (d[ref] < bottom) bottom = d[ref];
-  });
-  return [(bottom | 0) - offset, (top | 0) + offset];
-};
-
 const parseData = (data, uniqueExercises) => {
   const res = [];
   for (let rec of data) {
@@ -55,7 +45,7 @@ const getRandomColor = () => {
   return `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`; // Generates a random color
 };
 
-const Chart = (props) => {
+const RepsAndWeightGraph = (props) => {
   const { uniqueExercises } = props;
   const [colorMap, setColorMap] = useState({});
   const [legendPayload, setLegendPayload] = useState([]);
@@ -96,9 +86,6 @@ const Chart = (props) => {
   const [bottom, setBottom] = useState('dataMin-1');
   const [top2, setTop2] = useState('dataMax+20');
   const [bottom2, setBottom2] = useState('dataMin-20');
-
-  console.log(uniqueExercises);
-  console.log(data);
 
   const zoom = useCallback(() => {
     if (!refAreaLeft || !refAreaRight || refAreaLeft === refAreaRight) {
@@ -145,9 +132,7 @@ const Chart = (props) => {
     setRefAreaRight('');
   }, []);
 
-  console.log('??????????!!', uniqueExercises);
   if (!data) return <></>;
-  console.log(data);
   return (
     <div
       className='highlight-bar-charts'
@@ -266,4 +251,4 @@ const Chart = (props) => {
   );
 };
 
-export default Chart;
+export default RepsAndWeightGraph;

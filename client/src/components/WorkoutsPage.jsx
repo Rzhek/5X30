@@ -18,7 +18,6 @@ export default function WorkoutsPage() {
     }
   }, [user]);
 
-  console.log(userWorkouts);
   return (
     <div className='p-6 md:p-8 bg-secondary rounded-lg shadow-md m-6'>
       <h1 className='text-2xl md:text-3xl font-bold text-primary mb-6 pb-2 border-b border-secondary border-opacity-50'>

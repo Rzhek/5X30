@@ -20,7 +20,6 @@ export default function WorkoutFullCard({
     }
   }, [exercises]);
 
-  console.log('SELECTED', selected, uniqueExercises);
   return (
     <div key={name} className='p-4 bg-secondary rounded-lg shadow-md mb-5 mt-3'>
       <h4 className='text-lg font-semibold text-gray-100 mb-3 border-b border-gray-600 pb-2'>
