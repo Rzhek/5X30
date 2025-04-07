@@ -10,7 +10,6 @@ export default function AnalyticsPage() {
   const [userWorkouts, setUserWorkouts] = useState([]);
   const [userRecords, setUserRecords] = useState([]);
   const [uniqueExercises, setUniqueExercises] = useState([]);
-  const [selectedType, setSelectedType] = useState('weight');
 
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -45,20 +44,7 @@ export default function AnalyticsPage() {
 
       {userRecords.length ? (
         <>
-          <select
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-            className='text-gray-200'
-          >
-            <option value='weight'>Weight</option>
-            <option value='reps'>Reps</option>
-            <option value='both'>Both</option>
-          </select>
-          <Chart
-            data={userRecords}
-            uniqueExercises={uniqueExercises}
-            selectedType={selectedType}
-          />
+          <Chart data={userRecords} uniqueExercises={uniqueExercises} />
         </>
       ) : (
         ''
