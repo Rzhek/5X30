@@ -194,7 +194,11 @@ const Chart = (props) => {
           data={data}
           onMouseDown={(e) => setRefAreaLeft(e.activeLabel)}
           onMouseMove={(e) => refAreaLeft && setRefAreaRight(e.activeLabel)}
-          onMouseUp={zoom}
+          onMouseUp={() => {
+            setRefAreaLeft('');
+            setRefAreaRight('');
+            zoom();
+          }}
         >
           <CartesianGrid strokeDasharray='3 3' />
           <XAxis
