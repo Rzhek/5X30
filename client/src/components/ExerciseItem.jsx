@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react';
+import { toast } from 'react-toastify';
 import { ContextLocalExercises } from './ContextLocalExercises';
 
 const ExerciseItem = ({ item, addOrDelete }) => {
@@ -18,7 +19,6 @@ const ExerciseItem = ({ item, addOrDelete }) => {
 
   return (
     <div className='bg-secondary p-6 rounded-2xl shadow-lg border border-primary mb-4 flex-1 min-w-[250px] max-w-xs'>
-      <h1>{_id}</h1>
       <h3 className='text-2xl font-bold text-primary mb-2'>{name}</h3>
       <p className='text-accent font-semibold'>
         Type: <span className='text-white'>{type}</span>
@@ -46,14 +46,20 @@ const ExerciseItem = ({ item, addOrDelete }) => {
       </div>
       {addOrDelete == 'delete' ? (
         <button
-          onClick={() =>
-            setLocalExercises(localExercises.filter((e) => e._id != _id))
-          }
+          onClick={() => {
+            setLocalExercises(localExercises.filter((e) => e._id != _id));
+            // toast.info('Exercise removed');
+          }}
         >
           🗑️
         </button>
       ) : (
-        <button onClick={() => setLocalExercises([...localExercises, item])}>
+        <button
+          onClick={() => {
+            setLocalExercises([...localExercises, item]);
+            // toast.success('Exercise added');
+          }}
+        >
           ➕
         </button>
       )}
