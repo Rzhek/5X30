@@ -5,11 +5,12 @@ import getUserWorkouts from '../util/getUserWorkouts';
 import WorkoutFullCard from './WorkoutFullCard';
 import { callGet } from '../util/external-api.service';
 import MuscleGraph from './MuscleGraph';
+import ExerciseGraph from './ExerciseGraph';
 
 const GRAPH_TABS = [
   { label: 'Reps & Weight', component: RepsAndWeightGraph },
   { label: 'Muscles', component: MuscleGraph },
-  // { label: 'Exercises', component: xyz },
+  { label: 'Exercises', component: ExerciseGraph },
 ];
 
 export default function AnalyticsPage() {
@@ -36,6 +37,8 @@ export default function AnalyticsPage() {
       fetchWorkouts();
     }
   }, [user]);
+
+  console.log(userRecords);
 
   const ActiveGraphComponent = GRAPH_TABS[activeTab].component;
 
