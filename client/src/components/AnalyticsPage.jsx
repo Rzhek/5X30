@@ -9,6 +9,8 @@ export default function AnalyticsPage() {
 	const { getAccessTokenSilently, user } = useAuth0();
 	const [userWorkouts, setUserWorkouts] = useState([]);
 	const [userRecords, setUserRecords] = useState([]);
+	const [uniqueExercises, setUniqueExercises] = useState([]);
+	const [selectedType, setSelectedType] = useState('weight');
 
 	useEffect(() => {
 		const fetchWorkouts = async () => {
@@ -29,21 +31,37 @@ export default function AnalyticsPage() {
 		}
 	}, [user]);
 
-	const initialData = [
-		{ date: new Date().getTime(), benchWeight: 100, benchReps: 10 },
-		{ date: new Date().getTime() + 1000, squatWeight: 150, squatReps: 20 },
-		{ date: new Date().getTime() + 2000, benchWeight: 110, benchReps: 12 },
-	];
-
 	return (
 		<div className='m-8'>
 			<h1>Analytics Page</h1>
 
 			{userWorkouts.map((w) => (
-				<WorkoutFullCard workout={w} />
+				<WorkoutFullCard
+					workout={w}
+					uniqueExercises={uniqueExercises}
+					setUniqueExercises={setUniqueExercises}
+				/>
 			))}
 
-			{userRecords.length ? <Chart data={userRecords} /> : ''}
+			{userRecords.length ? (
+				<>
+					<select
+						value={selectedType}
+						onChange={(e) => setSelectedType(e.target.value)}
+					>
+						<option value='weight'>Weight</option>
+						<option value='reps'>Reps</option>
+						<option value='both'>Both</option>
+					</select>
+					<Chart
+						data={userRecords}
+						uniqueExercises={uniqueExercises}
+						selectedType={selectedType}
+					/>
+				</>
+			) : (
+				''
+			)}
 		</div>
 	);
 }

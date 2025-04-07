@@ -9,6 +9,7 @@ import {
 	Tooltip,
 	ReferenceArea,
 	ResponsiveContainer,
+	Legend,
 } from 'recharts';
 
 const getAxisYDomain = (data, from, to, ref, offset) => {
@@ -21,7 +22,7 @@ const getAxisYDomain = (data, from, to, ref, offset) => {
 	return [(bottom | 0) - offset, (top | 0) + offset];
 };
 
-const parseData = (data) => {
+const parseData = (data, uniqueExercises) => {
 	const res = [];
 	for (let rec of data) {
 		const {
@@ -30,48 +31,72 @@ const parseData = (data) => {
 			reps,
 			forExercise: { name },
 		} = rec;
+		if (!uniqueExercises.find((e) => e == name)) continue;
 		res.push({
 			date: new Date(createdAt).getTime(),
 			[`${name} (Weight)`]: weight,
 			[`${name} (Reps)`]: reps,
 		});
 	}
-	// console.log('!!!!!!!', res);
-	// console.log(res);
-	// const sortedData = res.sort((a, b) => a.date - b.date);
-	// console.log('hui', res);
-	// console.log('pizda', sortedData);
 	return res;
-	// return sortedData;
 };
 
-const groupByExercise = (data) => {
-	const res = [];
-	for (let rec of data) {
-		if (!res.find((x) => x == rec.forExercise.name)) {
-			res.push(rec.forExercise.name);
-		}
-	}
-	return res;
+// const groupByExercise = (data) => {
+// 	const res = [];
+// 	for (let rec of data) {
+// 		if (!res.find((x) => x == rec.forExercise.name)) {
+// 			res.push(rec.forExercise.name);
+// 		}
+// 	}
+// 	return res;
+// };
+
+const getRandomColor = () => {
+	return `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`; // Generates a random color
 };
 
 const Chart = (props) => {
-	const [groups, setGroups] = useState([]);
+	const { uniqueExercises, selectedType } = props;
+	const [colorMap, setColorMap] = useState({});
+	const [legendPayload, setLegendPayload] = useState([]);
 	const [data, setData] = useState();
+
+	// useEffect(() => {
+	// 	if (props.uniqueExercises && props.uniqueExercises.length > 0) {
+	// 		setUniqueExercises(props.uniqueExercises);
+	// 	}
+	// }, [props.uniqueExercises]);
+
 	useEffect(() => {
-		setData(parseData(props.data));
-		setGroups(groupByExercise(props.data));
-	}, []);
+		setData(parseData(props.data, uniqueExercises));
+	}, [uniqueExercises]);
+
+	useEffect(() => {
+		const newColorMap = {};
+		uniqueExercises.forEach((exercise) => {
+			newColorMap[exercise] = getRandomColor();
+		});
+		setColorMap(newColorMap);
+
+		setLegendPayload(
+			uniqueExercises.map((ex) => ({
+				value: ex, // Exercise name
+				type: 'square', // Legend marker shape
+				color: newColorMap[ex], // Assigned color
+			}))
+		);
+	}, [uniqueExercises]);
+
 	const [left, setLeft] = useState('dataMin');
-	const [right, setRight] = useState(new Date().getTime());
+	const [right, setRight] = useState(new Date().getTime() + 10000000);
 	const [refAreaLeft, setRefAreaLeft] = useState('');
 	const [refAreaRight, setRefAreaRight] = useState('');
-	const [top, setTop] = useState('dataMax+1');
+	const [top, setTop] = useState('dataMax+50');
 	const [bottom, setBottom] = useState('dataMin-1');
 	const [top2, setTop2] = useState('dataMax+20');
 	const [bottom2, setBottom2] = useState('dataMin-20');
 
-	console.log(groups);
+	console.log(uniqueExercises);
 	console.log(data);
 
 	const zoom = useCallback(() => {
@@ -119,6 +144,7 @@ const Chart = (props) => {
 		setRefAreaRight('');
 	}, []);
 
+	console.log('??????????!!', uniqueExercises);
 	if (!data) return <></>;
 	console.log(data);
 	return (
@@ -134,9 +160,6 @@ const Chart = (props) => {
 				<LineChart
 					width={800}
 					height={400}
-					// data={() => {
-					// 	return data;
-					// }}
 					data={data}
 					onMouseDown={(e) => setRefAreaLeft(e.activeLabel)}
 					onMouseMove={(e) => refAreaLeft && setRefAreaRight(e.activeLabel)}
@@ -164,34 +187,32 @@ const Chart = (props) => {
 						yAxisId='reps'
 					/>
 					<Tooltip />
-					{groups.map((group) => {
-						console.log(`${group} (Weight)`);
-						return (
-							// <React.Fragment key={`${group}`}>
-							<Line
-								yAxisId='weight'
-								type='monotone'
-								dataKey={`${group} (Weight)`}
-								stroke='#8884d8'
-								animationDuration={300}
-							/>
-							// </React.Fragment>
-						);
-					})}
-					{groups.map((group) => {
-						console.log(`${group} (Weight)`);
-						return (
-							// <React.Fragment key={`${group}`}>
-							<Line
-								yAxisId='reps'
-								type='monotone'
-								dataKey={`${group} (Reps)`}
-								stroke='#82ca9d'
-								animationDuration={300}
-							/>
-							// </React.Fragment>
-						);
-					})}
+					<Legend payload={legendPayload} />
+
+					{selectedType === 'reps'
+						? ''
+						: uniqueExercises.map((group) => (
+								<Line
+									yAxisId='weight'
+									type='monotone'
+									dataKey={`${group} (Weight)`}
+									animationDuration={300}
+									connectNulls={true}
+									stroke={colorMap[group]}
+								/>
+						  ))}
+					{selectedType === 'weight'
+						? ''
+						: uniqueExercises.map((group) => (
+								<Line
+									yAxisId='reps'
+									type='monotone'
+									dataKey={`${group} (Reps)`}
+									animationDuration={300}
+									connectNulls={true}
+									stroke={colorMap[group]}
+								/>
+						  ))}
 
 					{refAreaLeft && refAreaRight ? (
 						<ReferenceArea

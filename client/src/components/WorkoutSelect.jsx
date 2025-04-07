@@ -104,54 +104,77 @@ export default function WorkoutSelect() {
 	};
 
 	return (
-		<>
-			<select
-				name='Select Workout'
-				id=''
-				className='text-primary'
-				value={selectedWorkout}
-				onChange={(e) => {
-					setSelectedWorkout(e.target.value);
-				}}
-			>
-				<option value='' disabled selected>
-					Select workout
-				</option>
-				{userWorkouts.map((w) => {
-					return (
+		<div className='p-6 space-y-6 bg-base-100 rounded-xl shadow-md'>
+			<div className='space-y-2'>
+				<label
+					htmlFor='workout-select'
+					className='text-secondary font-semibold'
+				>
+					Choose a Workout
+				</label>
+				<select
+					id='workout-select'
+					className='select select-bordered w-full text-primary'
+					value={selectedWorkout}
+					onChange={(e) => setSelectedWorkout(e.target.value)}
+				>
+					<option value='' disabled>
+						Select workout
+					</option>
+					{userWorkouts.map((w) => (
 						<option key={w._id} value={w.name}>
 							{w.name}
 						</option>
-					);
-				})}
-			</select>
-			<input
-				placeholder='workout name'
-				value={workoutName}
-				onChange={(e) => setWorkoutName(e.target.value)}
-			></input>
-			<button onClick={addWorkout}>add workout +</button>
-
-			{selectedWorkout != '' ? (
-				<button className='ml-6' onClick={deleteWorkout}>
-					Delete Workout
-				</button>
-			) : (
-				''
-			)}
-
-			<div className='flex flex-wrap gap-6'>
-				{localExercises.map((exercise) => {
-					return (
-						<ExerciseItem
-							key={exercise._id}
-							item={exercise}
-							addOrDelete={'delete'}
-						/>
-					);
-				})}
+					))}
+				</select>
 			</div>
-			<button onClick={pushLocalWorkoutChanges}>save workout</button>
-		</>
+
+			<div className='flex items-end gap-4'>
+				<div className='flex-1'>
+					<label
+						htmlFor='workout-name'
+						className='text-secondary font-semibold'
+					>
+						New Workout Name
+					</label>
+					<input
+						id='workout-name'
+						placeholder='Workout name'
+						className='input input-bordered w-full text-primary'
+						value={workoutName}
+						onChange={(e) => setWorkoutName(e.target.value)}
+					/>
+				</div>
+				<button onClick={addWorkout} className='btn btn-accent'>
+					Add Workout +
+				</button>
+			</div>
+
+			<div className='flex justify-between items-center'>
+				{selectedWorkout !== '' && (
+					<button onClick={deleteWorkout} className='btn btn-error'>
+						Delete Workout
+					</button>
+				)}
+				<button
+					onClick={pushLocalWorkoutChanges}
+					className='btn btn-primary ml-auto'
+				>
+					Save Workout
+				</button>
+			</div>
+
+			<div className='divider'>Exercises</div>
+
+			<div className='flex flex-wrap gap-4'>
+				{localExercises.map((exercise) => (
+					<ExerciseItem
+						key={exercise._id}
+						item={exercise}
+						addOrDelete='delete'
+					/>
+				))}
+			</div>
+		</div>
 	);
 }
