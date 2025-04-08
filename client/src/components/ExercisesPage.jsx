@@ -43,7 +43,7 @@ export default function ExercisesPage() {
 			value={{ localExercises, setLocalExercises }}
 		>
 			<div className='m-8'>
-				<WorkoutSelect></WorkoutSelect>
+				<WorkoutSelect />
 				<h1 className='text-4xl font-bold text-primary mb-6'>Exercises</h1>
 
 				<form

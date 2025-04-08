@@ -35,17 +35,21 @@ export default function Header() {
 			<Link to='/' className='text-4xl font-bold text-primary p-4 rounded-xl'>
 				5X30
 			</Link>
-			<nav className='flex list-none flex-row gap-4'>
-				<Link to='/analytics' className='text-xl'>
-					Analytics
-				</Link>
-				<Link to='/workouts' className='text-xl'>
-					Log Workouts
-				</Link>
-				<Link to='/exercises' className='text-xl'>
-					Manage Workouts
-				</Link>
-			</nav>
+			{!isAuthenticated ? (
+				''
+			) : (
+				<nav className='flex list-none flex-row gap-4'>
+					<Link to='/analytics' className='text-xl'>
+						Analytics
+					</Link>
+					<Link to='/workouts' className='text-xl'>
+						Log Workouts
+					</Link>
+					<Link to='/exercises' className='text-xl'>
+						Manage Workouts
+					</Link>
+				</nav>
+			)}
 
 			<div className='flex justfity-between items-center gap-4'>
 				{!isAuthenticated ? (
