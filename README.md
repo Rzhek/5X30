@@ -58,7 +58,7 @@ server/.env
 MONGO_URI=your-mongodb-connection-uri
 PORT=6060
 EXERCISE_API_KEY=your-exercise-api-key
-CLIENT_ORIGIN_URL=http://localhost:3000
+CLIENT_ORIGIN_URL=http://localhost:5173
 AUTH0_AUDIENCE=your-auth0-audience
 AUTH0_DOMAIN=your-auth0-domain
 ```
@@ -79,4 +79,4 @@ cd server
 nodemon server.js
 ```
 
-- Go to http://localhost:3000
+- Go to http://localhost:5173
